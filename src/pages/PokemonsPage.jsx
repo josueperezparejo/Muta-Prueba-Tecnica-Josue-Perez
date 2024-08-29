@@ -1,10 +1,89 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Pagination } from '@nextui-org/react'; // Ensure correct import path
+import { Button, Chip, Pagination } from '@nextui-org/react'; // Ensure correct import path
 import { getFetchPokemons } from '../hooks/getFecthPokemons';
 import PokemonLogo from '../assets/pokemon-logo.png'
 import { Loading } from '../components/Loading';
 import { Background } from '../components/Background';
+import { HeartIcon } from '../components/HeartIcon';
+
+const pokemonsTypes = [
+  {
+    name: 'psychic',
+    color: 'bg-purple-500',
+  },
+  {
+    name: 'fire',
+    color: 'bg-red-500'
+  },
+  {
+    name: 'water',
+    color: 'bg-blue-500'
+  },
+  {
+    name: 'grass',
+    color: 'bg-green-500'
+  },
+  {
+    name: 'electric',
+    color: 'bg-yellow-500'
+  },
+  {
+    name: 'bug',
+    color: 'bg-green-400'
+  },
+  {
+    name: 'normal',
+    color: 'bg-gray-500'
+  },
+  {
+    name: 'fighting',
+    color: 'bg-red-600'
+  },
+  {
+    name: 'flying',
+    color: 'bg-blue-400'
+  },
+  {
+    name: 'poison',
+    color: 'bg-purple-600'
+  },
+  {
+    name: 'ground',
+    color: 'bg-gray-900'
+  },
+  {
+    name: 'rock',
+    color: 'bg-gray-700'
+  },
+  {
+    name: 'ice',
+    color: 'bg-cyan-400'
+  }
+
+]
+
+
+
+
+
+
+
+
+
+
+
+//     case 'dragon':
+// return 'bg-blue-600';
+//     case 'dark':
+// return 'bg-gray-800';
+//     case 'steel':
+// return 'bg-gray-600';
+//     case 'fairy':
+// return 'bg-pink-500';
+//     default:
+// return 'bg-gray-200';
+
 
 
 export const PokemonsPage = () => {
@@ -28,16 +107,25 @@ export const PokemonsPage = () => {
 
   return (
     <div >
-      <Background />
+
       <h1 className="text-4xl text-center my-4 md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-purple-600 to-purple-800 animate-gradient-x">
         PokéAPI Characters
       </h1>
+
+      <div className='flex gap-3 flex-wrap justify-center'>
+        {pokemonsTypes.map(pokemon => (
+          <div key={pokemon.name} className={`px-2 py-1 text-sm font-semibold text-white rounded-full ${pokemon.color}`}>
+            {pokemon.name}
+          </div>
+        ))}
+      </div>
       <ul className='flex flex-wrap justify-center gap-4'>
         {data.map((pokemon, index) => (
-          <Link key={index} to={`/pokemon/${pokemon.name}`}>
-            <div className="w-48 bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+          <div key={index} className="w-48 bg-white max-h-full  rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+
+            <Link to={`/pokemon/${pokemon.name}`}>
               <div className="p-4 flex flex-col items-center">
-                <div className="w-24 h-24 bg-gray-100 rounded-full mb-3 flex items-center justify-center overflow-hidden">
+                <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden">
                   <img
                     src={pokemon.image ? pokemon.image : PokemonLogo}
                     alt={pokemon.name}
@@ -45,9 +133,16 @@ export const PokemonsPage = () => {
                   />
                 </div>
                 <h2 className="text-lg font-semibold text-gray-800 mb-2 text-center">{pokemon.name}</h2>
+
               </div>
+            </Link>
+            <div className='flex justify-center p-2'>
+              <Button className="bg-black text-white">
+                <HeartIcon className="h-6 w-6 inline-block" />
+                Add to Favorites
+              </Button>
             </div>
-          </Link>
+          </div>
         ))}
       </ul>
 
@@ -88,6 +183,7 @@ export const PokemonsPage = () => {
           </Button>
         </div>
       </div>
+
     </div>
   );
 };

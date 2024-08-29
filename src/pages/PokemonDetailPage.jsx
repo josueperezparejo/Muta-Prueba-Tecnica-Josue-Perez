@@ -4,6 +4,8 @@ import { ErrorMessage } from '../components/ErrorMessage';
 import PokemonLogo from '../assets/pokemon-logo.png'
 import { Loading } from '../components/Loading';
 import { Background } from '../components/Background';
+import { HeartIcon } from '../components/HeartIcon';
+import { Button } from '@nextui-org/button';
 
 export const PokemonDetailPage = () => {
   const { name } = useParams(); // Obtiene el ID del Pokémon de la URL
@@ -19,7 +21,7 @@ export const PokemonDetailPage = () => {
 
       try {
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}/`);
-        
+
         if (!response.ok) {
           throw new Error('Error fetching Pokémon details');
         }
@@ -105,14 +107,19 @@ export const PokemonDetailPage = () => {
               ))}
             </div>
           </div>
-          <div className="px-6 pt-4 pb-2">
+          <div className="px-6 pt-4 pb-2 flex justify-between">
             <button
-              className="px-4 py-2 text-white bg-purple-500 rounded hover:bg-purple-700"
+              className="px-4 py-2 text-white bg-purple-500 rounded-2xl hover:bg-purple-700"
               onClick={() => navigate(-1)}
             >
               Go Back
             </button>
+            <Button className="bg-black text-white">
+            <HeartIcon className="h-6 w-6 inline-block" />
+            Add to Favorites
+          </Button>
           </div>
+          
         </div>
       </div>
     </>
