@@ -1,15 +1,18 @@
-import { Route, Routes } from "react-router-dom"
+import { Navigate, Route, Routes } from "react-router-dom"
+import { NotFoundPage, PokemonDetailPage, PokemonsPage } from "./pages"
+
 
 function App() {
 
   return (
     <>
       <Routes>
-        <Route path="/" element={<p className='font-bold text-2xl'>Home Page</p>} />
+        <Route path="/" element={<Navigate to="/pokemons" />} />
 
-        <Route path="/pokemon" element={<p className='font-bold text-2xl'>Pokemon Page!</p>} />
+        <Route path="/pokemons" element={<PokemonsPage />} />
+        <Route path="/pokemon/:name" element={<PokemonDetailPage />} />
 
-        <Route path="/*" element={<p className='font-bold text-2xl'>Home Page Default</p>} />
+        <Route path="/*" element={<NotFoundPage />} />
       </Routes>
     </>
   )

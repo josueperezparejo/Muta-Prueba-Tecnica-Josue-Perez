@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@nextui-org/button": "^2.0.37",
+    "@nextui-org/card": "^2.0.33",
     "@nextui-org/react": "^2.4.6",
     "framer-motion": "^11.3.30",
     "react": "^18.3.1",
