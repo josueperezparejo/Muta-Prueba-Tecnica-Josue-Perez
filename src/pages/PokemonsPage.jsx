@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Button, Chip, Pagination } from '@nextui-org/react'; // Ensure correct import path
+import { Link, useNavigate } from 'react-router-dom';
+import { Button, Pagination, Select, SelectItem } from '@nextui-org/react'; // Ensure correct import path
 import { getFetchPokemons } from '../hooks/getFecthPokemons';
 import PokemonLogo from '../assets/pokemon-logo.png'
 import { Loading } from '../components/Loading';
 import { Background } from '../components/Background';
 import { HeartIcon } from '../components/HeartIcon';
+import { usePokemonStore } from '../store/usePokemonStore';
 
 const pokemonsTypes = [
   {
@@ -63,34 +64,37 @@ const pokemonsTypes = [
 
 ]
 
-
-
-
-
-
-
-
-
-
-
-//     case 'dragon':
-// return 'bg-blue-600';
-//     case 'dark':
-// return 'bg-gray-800';
-//     case 'steel':
-// return 'bg-gray-600';
-//     case 'fairy':
-// return 'bg-pink-500';
-//     default:
-// return 'bg-gray-200';
-
-
+const cantPerPage = [
+  { key: "20", label: "20" },
+  { key: "30", label: "30" },
+  { key: "40", label: "40" },
+  { key: "50", label: "50" },
+];
 
 export const PokemonsPage = () => {
   // Get the stored page or default to 1
   const storedPage = sessionStorage.getItem('currentPage');
   const [currentPage, setCurrentPage] = useState(storedPage ? parseInt(storedPage, 10) : 1);
-  const { loading, data, error, nextPage, previousPage, totalPages, setCurrentUrl } = getFetchPokemons(`https://pokeapi.co/api/v2/pokemon?offset=${(currentPage - 1) * 20}&limit=20`);
+  const [cantPage, setCantPage] = useState(20);
+  const { loading, data, setData, error, nextPage, previousPage, totalPages, setCurrentUrl } = getFetchPokemons(`https://pokeapi.co/api/v2/pokemon?offset=${(currentPage - 1) * 20}&limit=20`);
+  const { toggleFavorite, favorites } = usePokemonStore();
+
+  const navigate = useNavigate()
+
+  const handleAddFavorite = (args) => {
+    toggleFavorite(args)
+  }
+
+  useEffect(() => {
+    setData((prevData) =>
+      prevData.map((pokemon) => ({
+        ...pokemon,
+        isFavorite: favorites.includes(pokemon.name), // Actualizar solo el estado de isFavorite
+      }))
+    );
+  }, [favorites, nextPage, previousPage]);
+
+
 
   useEffect(() => {
     // Save the current page in sessionStorage whenever it changes
@@ -112,9 +116,27 @@ export const PokemonsPage = () => {
         PokéAPI Characters
       </h1>
 
+      <Button onClick={() => navigate('/pokemons/favorites')} type="button">Ir a Favoritos</Button>
+
+      <div className="w-full flex flex-row flex-wrap gap-4">
+        <Select
+          color={'default'}
+          label="Cantidad por pagina"
+          placeholder="Cantidad por pagina"
+          defaultSelectedKeys={["20"]}
+          className="max-w-xs"
+        >
+          {cantPerPage.map((cant) => (
+            <SelectItem onClick={() => setCantPage(cant.key)} key={cant.key}>
+              {cant.label}
+            </SelectItem>
+          ))}
+        </Select>
+      </div>
+
       <div className='flex gap-3 flex-wrap justify-center'>
         {pokemonsTypes.map(pokemon => (
-          <div key={pokemon.name} className={`px-2 py-1 text-sm font-semibold text-white rounded-full ${pokemon.color}`}>
+          <div key={pokemon.name} className={`cursor-pointer px-2 py-1 text-sm font-semibold text-white rounded-full ${pokemon.color}`}>
             {pokemon.name}
           </div>
         ))}
@@ -137,8 +159,8 @@ export const PokemonsPage = () => {
               </div>
             </Link>
             <div className='flex justify-center p-2'>
-              <Button className="bg-black text-white">
-                <HeartIcon className="h-6 w-6 inline-block" />
+              <Button onClick={() => handleAddFavorite(pokemon.name)} className="bg-black text-white">
+                <HeartIcon isFavorite={pokemon.isFavorite} className="h-6 w-6 inline-block" />
                 Add to Favorites
               </Button>
             </div>

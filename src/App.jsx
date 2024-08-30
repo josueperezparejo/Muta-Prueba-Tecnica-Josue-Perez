@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom"
-import { NotFoundPage, PokemonDetailPage, PokemonsPage } from "./pages"
+import { FavoritesPage, NotFoundPage, PokemonDetailPage, PokemonsPage } from "./pages"
 
 
 function App() {
@@ -11,6 +11,7 @@ function App() {
 
         <Route path="/pokemons" element={<PokemonsPage />} />
         <Route path="/pokemon/:name" element={<PokemonDetailPage />} />
+        <Route path="/pokemons/favorites" element={<FavoritesPage />} />
 
         <Route path="/*" element={<NotFoundPage />} />
       </Routes>

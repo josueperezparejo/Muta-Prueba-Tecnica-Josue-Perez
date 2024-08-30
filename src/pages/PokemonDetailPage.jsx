@@ -6,6 +6,7 @@ import { Loading } from '../components/Loading';
 import { Background } from '../components/Background';
 import { HeartIcon } from '../components/HeartIcon';
 import { Button } from '@nextui-org/button';
+import { usePokemonStore } from '../store/usePokemonStore';
 
 export const PokemonDetailPage = () => {
   const { name } = useParams(); // Obtiene el ID del Pokémon de la URL
@@ -13,6 +14,13 @@ export const PokemonDetailPage = () => {
   const [pokemon, setPokemon] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const { isFavorite, toggleFavorite } = usePokemonStore();
+
+  const handleAddFavorite = (args) => {
+    toggleFavorite(args)
+  }
+
 
   useEffect(() => {
     const fetchPokemonDetails = async () => {
@@ -114,12 +122,12 @@ export const PokemonDetailPage = () => {
             >
               Go Back
             </button>
-            <Button className="bg-black text-white">
-            <HeartIcon className="h-6 w-6 inline-block" />
-            Add to Favorites
-          </Button>
+            <Button onClick={() => handleAddFavorite(pokemon.name)} className="bg-black text-white">
+              <HeartIcon isFavorite={isFavorite(pokemon.name)} className="h-6 w-6 inline-block" />
+              Add to Favorites
+            </Button>
           </div>
-          
+
         </div>
       </div>
     </>

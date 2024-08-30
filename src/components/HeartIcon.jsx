@@ -1,4 +1,7 @@
 export const HeartIcon = (props) => {
+
+  const { isFavorite } = props
+
   return (
     <svg
       {...props}
@@ -6,7 +9,7 @@ export const HeartIcon = (props) => {
       width="24"
       height="24"
       viewBox="0 0 24 24"
-      fill="red"
+      fill={isFavorite ? 'red' : 'fff'}
       stroke="currentColor"
       strokeWidth="2"
       strokeLinecap="round"
