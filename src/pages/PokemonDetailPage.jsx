@@ -1,26 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ErrorMessage } from '../components/ErrorMessage';
-import PokemonLogo from '../assets/pokemon-logo.png'
-import { Loading } from '../components/Loading';
-import { Background } from '../components/Background';
-import { HeartIcon } from '../components/HeartIcon';
 import { Button } from '@nextui-org/button';
+
+import { getTypeColor } from '../helpers';
 import { usePokemonStore } from '../store/usePokemonStore';
+import { ErrorMessage, Loading, HeartIcon } from '../components';
+
+import PokemonLogo from '../assets/pokemon-logo.png';
 
 export const PokemonDetailPage = () => {
-  const { name } = useParams(); // Obtiene el ID del Pokémon de la URL
-  const navigate = useNavigate(); // Hook para navegar a páginas anteriores
+
+  const { name } = useParams();
+  const navigate = useNavigate();
+
   const [pokemon, setPokemon] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const { isFavorite, toggleFavorite } = usePokemonStore();
-
-  const handleAddFavorite = (args) => {
-    toggleFavorite(args)
-  }
-
 
   useEffect(() => {
     const fetchPokemonDetails = async () => {
@@ -34,20 +31,15 @@ export const PokemonDetailPage = () => {
           throw new Error('Error fetching Pokémon details');
         }
         const data = await response.json();
-
-        // Obtener el Pokémon en inglés para descripción
         let description = ' '
         const speciesResponse = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${name}/`);
         if (!speciesResponse.ok) {
-          // throw new Error('Error fetching Pokémon species');
           description = 'No description available'
         } else {
           const speciesData = await speciesResponse.json();
 
-          // Extraer la descripción en inglés
           description = speciesData.flavor_text_entries.find(entry => entry.language.name === 'en')?.flavor_text || 'No description available';
         }
-
 
         setPokemon({
           ...data,
@@ -65,12 +57,10 @@ export const PokemonDetailPage = () => {
 
   if (loading) return <Loading />
   if (error) return <ErrorMessage message="Pokémon could not be found. Please try another name." />;
-  if (!pokemon) return <div>No Pokémon found</div>;
 
   return (
-    <>
-      <Background />
-      <div className='h-screen flex justify-center items-center'>
+    <div className='container mx-auto'>
+      <div className='container mx-auto p-4 h-screen flex justify-center items-center'>
         <div className="max-w-sm h-auto rounded overflow-hidden shadow-lg bg-white">
           <div className="bg-purple-100 p-4 flex justify-center">
             <img
@@ -79,6 +69,7 @@ export const PokemonDetailPage = () => {
               alt={pokemon.name}
             />
           </div>
+
           <div className="px-6 py-4">
             <div className="font-bold text-purple-600 text-xl mb-2">{pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</div>
             <p className="text-gray-500 text-base mb-2">
@@ -106,6 +97,7 @@ export const PokemonDetailPage = () => {
               </div>
             </div>
           </div>
+
           <div className="px-6 pt-4 pb-2">
             <div className="font-semibold text-blue-700 mb-2">Base Stats:</div>
             <div className="grid grid-cols-2 gap-2 text-sm">
@@ -115,63 +107,26 @@ export const PokemonDetailPage = () => {
               ))}
             </div>
           </div>
+
           <div className="px-6 pt-4 pb-2 flex justify-between">
-            <button
-              className="px-4 py-2 text-white bg-purple-500 rounded-2xl hover:bg-purple-700"
+            <Button
               onClick={() => navigate(-1)}
+              className="px-4 py-2 text-white bg-purple-500 rounded-2xl hover:bg-purple-700"
             >
               Go Back
-            </button>
-            <Button onClick={() => handleAddFavorite(pokemon.name)} className="bg-black text-white">
-              <HeartIcon isFavorite={isFavorite(pokemon.name)} className="h-6 w-6 inline-block" />
+            </Button>
+
+            <Button
+              onClick={() => toggleFavorite(pokemon.name)}
+              className="bg-black text-white">
+              <HeartIcon
+                isFavorite={isFavorite(pokemon.name)}
+                className="h-6 w-6 inline-block" />
               Add to Favorites
             </Button>
           </div>
-
         </div>
       </div>
-    </>
+    </div>
   );
-};
-
-// Función para obtener el color del tipo de Pokémon
-const getTypeColor = (type) => {
-  switch (type) {
-    case 'fire':
-      return 'bg-red-500';
-    case 'water':
-      return 'bg-blue-500';
-    case 'grass':
-      return 'bg-green-500';
-    case 'electric':
-      return 'bg-yellow-500';
-    case 'psychic':
-      return 'bg-purple-500';
-    case 'bug':
-      return 'bg-green-400';
-    case 'normal':
-      return 'bg-gray-500';
-    case 'fighting':
-      return 'bg-red-600';
-    case 'flying':
-      return 'bg-blue-400';
-    case 'poison':
-      return 'bg-purple-600';
-    case 'ground':
-      return 'bg-brown-500';
-    case 'rock':
-      return 'bg-gray-700';
-    case 'ice':
-      return 'bg-cyan-400';
-    case 'dragon':
-      return 'bg-blue-600';
-    case 'dark':
-      return 'bg-gray-800';
-    case 'steel':
-      return 'bg-gray-600';
-    case 'fairy':
-      return 'bg-pink-500';
-    default:
-      return 'bg-gray-200';
-  }
 };

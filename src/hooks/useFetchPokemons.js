@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
-import { usePokemonStore } from "../store/usePokemonStore";
+import { useCallback, useEffect, useState } from 'react';
+import { usePokemonStore } from '../store/usePokemonStore';
 
-export const getFetchPokemons = (initialUrl) => {
+export const useFetchPokemons = (initialUrl, initialLimit = sessionStorage.setItem('cantPage', cantPage) || 20) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
@@ -9,8 +9,9 @@ export const getFetchPokemons = (initialUrl) => {
   const [nextPage, setNextPage] = useState(null);
   const [previousPage, setPreviousPage] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
+  const [limit, setLimit] = useState(initialLimit);
 
-  const { favorites } = usePokemonStore(); 
+  const { favorites } = usePokemonStore();
 
   const fetchData = useCallback(async (url) => {
     setLoading(true);
@@ -39,27 +40,37 @@ export const getFetchPokemons = (initialUrl) => {
       setData(pokemonDetails);
       setNextPage(result.next);
       setPreviousPage(result.previous);
-      setTotalPages(Math.ceil(result.count / 20)); 
+      setTotalPages(Math.ceil(result.count / limit));
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  }, []); 
+  }, [favorites, limit]);
+
 
   useEffect(() => {
-    fetchData(currentUrl);
-  }, [currentUrl, fetchData]);
+    if (currentUrl) {
+      fetchData(currentUrl);
+    }
+  }, [currentUrl, fetchData, limit]);
 
-  
+
   useEffect(() => {
     setData((prevData) =>
       prevData.map((pokemon) => ({
         ...pokemon,
-        isFavorite: favorites.includes(pokemon.name), 
+        isFavorite: favorites.includes(pokemon.name),
       }))
     );
   }, [favorites]);
 
-  return { loading, data, setData, error, nextPage, previousPage, totalPages, setCurrentUrl };
+
+  useEffect(() => {
+    const offset = (currentUrl.match(/offset=(\d+)/) || [])[1] || 0;
+    const url = `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`;
+    setCurrentUrl(url);
+  }, [limit]);
+
+  return { loading, data, setData, error, nextPage, previousPage, totalPages, setCurrentUrl, setLimit };
 };

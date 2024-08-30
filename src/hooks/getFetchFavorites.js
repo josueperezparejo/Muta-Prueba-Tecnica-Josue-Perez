@@ -6,21 +6,19 @@ export const getFetchFavorites = () => {
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
 
-  const { favorites } = usePokemonStore(); // Acceso a favoritos desde Zustand
+  const { favorites } = usePokemonStore();
 
-  // Función para obtener los datos de Pokémon favoritos
   const fetchFavoritesData = useCallback(async () => {
     setLoading(true);
     setError(null);
 
     try {
-      // Si no hay favoritos, no hace falta hacer una consulta
+
       if (favorites.length === 0) {
         setData([]);
         return;
       }
 
-      // Obtener detalles de cada Pokémon favorito
       const pokemonDetailsPromises = favorites.map(async (pokemonName) => {
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
         if (!response.ok) {
@@ -30,7 +28,7 @@ export const getFetchFavorites = () => {
         return {
           name: pokemonDetails.name,
           image: pokemonDetails.sprites.front_default,
-          isFavorite: true // Siempre es true porque estamos en la vista de favoritos
+          isFavorite: true
         };
       });
 
@@ -41,7 +39,7 @@ export const getFetchFavorites = () => {
     } finally {
       setLoading(false);
     }
-  }, [favorites]); // Actualiza los datos cuando cambian los favoritos
+  }, [favorites]);
 
   useEffect(() => {
     fetchFavoritesData();
