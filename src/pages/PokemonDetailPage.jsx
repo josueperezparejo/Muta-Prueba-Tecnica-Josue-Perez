@@ -60,11 +60,11 @@ export const PokemonDetailPage = () => {
 
   return (
     <div className='container mx-auto'>
-      <div className='container mx-auto p-4 h-screen flex justify-center items-center'>
+      <div className='my-8 p-4 h-screen flex justify-center items-center'>
         <div className="max-w-sm h-auto rounded overflow-hidden shadow-lg bg-white">
           <div className="bg-purple-100 p-4 flex justify-center">
             <img
-              className="w-32 h-32 object-contain"
+              className="w-32 h-32 object-contain animate__animated animate__fadeIn"
               src={pokemon.sprites.front_default || PokemonLogo}
               alt={pokemon.name}
             />

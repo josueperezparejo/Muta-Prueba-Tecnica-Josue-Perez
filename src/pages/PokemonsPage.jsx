@@ -60,7 +60,7 @@ export const PokemonsPage = () => {
         PokéAPI Characters
       </h1>
 
-      <div className='flex justify-end my-4 mr-8'>
+      <div className='flex justify-end my-4 mr-8 animate__animated  animate__backInRight'>
         <Button
           size='md'
           className="px-4 font-semibold py-2 text-white bg-purple-500 rounded-2xl hover:bg-purple-700"
@@ -87,7 +87,7 @@ export const PokemonsPage = () => {
                   <img
                     src={pokemon.image ? pokemon.image : PokemonLogo}
                     alt={pokemon.name}
-                    className="w-20 h-20 object-contain"
+                    className="w-20 h-20 object-contain animate__animated animate__fadeIn"
                   />
                 </div>
                 <h2 className="text-lg font-semibold text-gray-800 mb-2 text-center">{pokemon.name}</h2>

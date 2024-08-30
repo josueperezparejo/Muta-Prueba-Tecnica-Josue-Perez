@@ -1,7 +1,6 @@
 export const HeartIcon = (props) => {
 
   const { isFavorite } = props
-  console.log({isFavorite})
 
   return (
     <svg
