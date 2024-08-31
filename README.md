@@ -6,7 +6,7 @@ Hola, soy Josué. En esta prueba técnica para Muta, estoy desarrollando una apl
 
 El proyecto está desplegado y disponible en línea. Puedes verlo y probar la aplicación en el siguiente enlace:
 
-[Ver el Proyecto](https://tu-enlace-de-despliegue.com)
+[Ver el Proyecto](https://pokemonapi-muta.netlify.app/pokemons)
 
 # Requisitos Previos
 
