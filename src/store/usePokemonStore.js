@@ -1,4 +1,4 @@
-import { create } from 'zustand'; // Correct import syntax
+import { create } from 'zustand';
 
 export const usePokemonStore = create((set, get) => ({
   favorites: JSON.parse(localStorage.getItem('favorites')) || [],

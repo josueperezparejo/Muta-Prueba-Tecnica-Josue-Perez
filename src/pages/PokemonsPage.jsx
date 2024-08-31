@@ -1,15 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Button, Pagination } from '@nextui-org/react';
 
-
-
-import { pokemonsTypes } from '../config';
-import { Loading, HeartIcon, ErrorMessage } from '../components';
+import { Loading, HeartIcon, ErrorMessage, PokemonSearchForm, Footer, Title } from '../components';
 import { usePokemonStore } from '../store/usePokemonStore';
 import { getFetchPokemons } from '../hooks/getFecthPokemons';
 
 import PokemonLogo from '../assets/pokemon-logo.png'
+import { POKEAPI } from '../config';
 
 export const PokemonsPage = () => {
 
@@ -18,8 +16,6 @@ export const PokemonsPage = () => {
   const [currentPage, setCurrentPage] = useState(storedPage ? parseInt(storedPage, 10) : 1);
 
   const { favorites, toggleFavorite } = usePokemonStore();
-
-  const navigate = useNavigate()
 
   const {
     data,
@@ -30,7 +26,7 @@ export const PokemonsPage = () => {
     setCurrentUrl,
     setData,
     totalPages,
-  } = getFetchPokemons(`https://pokeapi.co/api/v2/pokemon?offset=${(currentPage - 1) * 20}&limit=20`);
+  } = getFetchPokemons(`${POKEAPI}pokemon?offset=${(currentPage - 1) * 20}&limit=20`);
 
   useEffect(() => {
     setData((prevData) =>
@@ -46,7 +42,7 @@ export const PokemonsPage = () => {
     sessionStorage.setItem('currentPage', currentPage);
 
     const offset = (currentPage - 1) * 20;
-    const url = `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=20`;
+    const url = `${POKEAPI}pokemon?offset=${offset}&limit=20`;
     setCurrentUrl(url);
   }, [currentPage, setCurrentUrl]);
 
@@ -54,28 +50,11 @@ export const PokemonsPage = () => {
   if (error) return <ErrorMessage message="Pokémon could not be found. Please try another name." />;
 
   return (
-    <div className='container mx-auto' >
+    <div className='container mx-auto h-full' >
 
-      <h1 className="text-4xl text-center my-4 md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-purple-600 to-purple-800 animate-gradient-x">
-        PokéAPI Characters
-      </h1>
+      <Title />
 
-      <div className='flex justify-end my-4 mr-8 animate__animated  animate__backInRight'>
-        <Button
-          size='md'
-          className="px-4 font-semibold py-2 text-white bg-purple-500 rounded-2xl hover:bg-purple-700"
-          onClick={() => navigate('/pokemons/favorites')}>
-          go to Favorites ➡️
-        </Button>
-      </div>
-
-      <div className='flex gap-3 flex-wrap justify-center'>
-        {pokemonsTypes.map(pokemon => (
-          <div key={pokemon.name} className={`cursor-pointer px-2 py-1 text-sm font-semibold text-white rounded-full ${pokemon.color}`}>
-            {pokemon.name}
-          </div>
-        ))}
-      </div>
+      <PokemonSearchForm title={'Find Your Pokémon'} />
 
       <ul className='flex flex-wrap justify-center gap-4'>
         {data.map((pokemon, index) => (
@@ -83,7 +62,7 @@ export const PokemonsPage = () => {
 
             <Link to={`/pokemon/${pokemon.name}`}>
               <div className="p-4 flex flex-col items-center">
-                <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden">
+                <div className="w-24 h-24 bg-gray-100 hover:bg-purple-200 transition duration-300 ease-in-out rounded-full flex items-center justify-center overflow-hidden">
                   <img
                     src={pokemon.image ? pokemon.image : PokemonLogo}
                     alt={pokemon.name}
@@ -141,6 +120,8 @@ export const PokemonsPage = () => {
           </Button>
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 };

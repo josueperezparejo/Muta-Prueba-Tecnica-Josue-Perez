@@ -14,9 +14,11 @@
     "@nextui-org/card": "^2.0.33",
     "@nextui-org/react": "^2.4.6",
     "framer-motion": "^11.3.30",
+    "lucide-react": "^0.436.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.1",
+    "sweetalert2": "^11.12.4",
     "zustand": "^4.5.5"
   },
   "devDependencies": {

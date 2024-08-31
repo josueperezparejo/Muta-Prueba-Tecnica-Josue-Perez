@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { usePokemonStore } from '../store/usePokemonStore';
+import { POKEAPI } from '../config';
 
 export const getFetchFavorites = () => {
   const [loading, setLoading] = useState(true);
@@ -9,6 +10,7 @@ export const getFetchFavorites = () => {
   const { favorites } = usePokemonStore();
 
   const fetchFavoritesData = useCallback(async () => {
+
     setLoading(true);
     setError(null);
 
@@ -20,11 +22,13 @@ export const getFetchFavorites = () => {
       }
 
       const pokemonDetailsPromises = favorites.map(async (pokemonName) => {
-        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
+        const response = await fetch(`${POKEAPI}pokemon/${pokemonName}`);
         if (!response.ok) {
           throw new Error(`Error fetching data for ${pokemonName}`);
         }
+
         const pokemonDetails = await response.json();
+
         return {
           name: pokemonDetails.name,
           image: pokemonDetails.sprites.front_default,

@@ -1,17 +1,18 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Button } from '@nextui-org/button';
 
 import { getTypeColor } from '../helpers';
 import { usePokemonStore } from '../store/usePokemonStore';
-import { ErrorMessage, Loading, HeartIcon } from '../components';
+import { ErrorMessage, Loading, HeartIcon, PokemonSearchForm, Footer, Title } from '../components';
 
 import PokemonLogo from '../assets/pokemon-logo.png';
+import { POKEAPI } from '../config';
 
 export const PokemonDetailPage = () => {
 
   const { name } = useParams();
-  const navigate = useNavigate();
+  const lowerCaseName = name.toLowerCase();
 
   const [pokemon, setPokemon] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -25,14 +26,14 @@ export const PokemonDetailPage = () => {
       setError(null);
 
       try {
-        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}/`);
+        const response = await fetch(`${POKEAPI}pokemon/${lowerCaseName}/`);
 
         if (!response.ok) {
           throw new Error('Error fetching Pokémon details');
         }
         const data = await response.json();
         let description = ' '
-        const speciesResponse = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${name}/`);
+        const speciesResponse = await fetch(`${POKEAPI}pokemon-species/${lowerCaseName}/`);
         if (!speciesResponse.ok) {
           description = 'No description available'
         } else {
@@ -53,16 +54,23 @@ export const PokemonDetailPage = () => {
     };
 
     fetchPokemonDetails();
-  }, [name]);
+  }, [lowerCaseName]);
 
   if (loading) return <Loading />
-  if (error) return <ErrorMessage message="Pokémon could not be found. Please try another name." />;
+  if (error) return (
+    <>
+      <ErrorMessage message={`The Pokémon ${lowerCaseName} could not be found. Please try another name.`} />;
+      <Footer />
+    </>
+  )
 
   return (
     <div className='container mx-auto'>
-      <div className='my-8 p-4 h-screen flex justify-center items-center'>
-        <div className="max-w-sm h-auto rounded overflow-hidden shadow-lg bg-white">
-          <div className="bg-purple-100 p-4 flex justify-center">
+      <Title />
+      <PokemonSearchForm title={`Discover the Power of ${lowerCaseName}!`} />
+      <div className='mb-8 h-auto flex justify-center'>
+        <div className="max-w-sm p-4 h-auto rounded-lg overflow-hidden shadow-lg bg-white">
+          <div className="bg-purple-100 rounded flex justify-center">
             <img
               className="w-32 h-32 object-contain animate__animated animate__fadeIn"
               src={pokemon.sprites.front_default || PokemonLogo}
@@ -108,17 +116,10 @@ export const PokemonDetailPage = () => {
             </div>
           </div>
 
-          <div className="px-6 pt-4 pb-2 flex justify-between">
-            <Button
-              onClick={() => navigate(-1)}
-              className="px-4 py-2 text-white bg-purple-500 rounded-2xl hover:bg-purple-700"
-            >
-              Go Back
-            </Button>
-
+          <div className="flex justify-between">
             <Button
               onClick={() => toggleFavorite(pokemon.name)}
-              className="bg-black text-white">
+              className="bg-black text-white w-full px-3">
               <HeartIcon
                 isFavorite={isFavorite(pokemon.name)}
                 className="h-6 w-6 inline-block" />
@@ -127,6 +128,8 @@ export const PokemonDetailPage = () => {
           </div>
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 };

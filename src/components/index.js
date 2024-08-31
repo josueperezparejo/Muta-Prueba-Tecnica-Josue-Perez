@@ -1,3 +1,7 @@
+export * from './AlertMessage'
 export * from './ErrorMessage'
+export * from './Footer'
 export * from './HeartIcon'
 export * from './Loading'
+export * from './PokemonSearchForm'
+export * from './Title'

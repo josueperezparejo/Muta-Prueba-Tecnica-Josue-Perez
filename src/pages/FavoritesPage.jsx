@@ -4,45 +4,33 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getFetchFavorites } from '../hooks/getFetchFavorites';
 import { Button } from '@nextui-org/button';
 import { HeartIcon } from '../components/HeartIcon';
+import { ErrorMessage, Footer, Loading, PokemonSearchForm, Title } from '../components';
 
 export const FavoritesPage = () => {
 
-  const navigate = useNavigate(-1)
-  const { toggleFavorite, favorites, clearFavorites } = usePokemonStore();
+  const { toggleFavorite, favorites } = usePokemonStore();
   const { loading, data, error } = getFetchFavorites();
+
+  if (loading) return <Loading />
+  if (error) return (
+    <>
+      <ErrorMessage message="Pokémon could not be found. Please try another name." />;
+      <Footer />
+    </>
+  )
+
 
   const handleAddFavorite = (args) => {
     toggleFavorite(args)
   }
-
-  const handleClearFavorites = () => {
-    clearFavorites()
-  }
   
   return (
-    <div className='container mx-auto'>
-      <h1 className="text-4xl text-center my-4 md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-purple-600 to-purple-800 animate-gradient-x">
-        PokéAPI Characters
-      </h1>
+    <div className='container mx-auto h-full'>
+      <Title />
 
-      <div className='flex justify-center gap-4 mb-4'>
-        <Button
-          size='md'
-          className="font-semibold px-4 py-2 text-white bg-purple-500 rounded-2xl hover:bg-purple-700"
-          onClick={() => navigate(-1)}
-        >
-          Go Back
-        </Button>
-        <Button
-          size='md'
-          className="font-semibold px-4 py-2 text-white bg-purple-500 rounded-2xl hover:bg-purple-700"
-          onClick={handleClearFavorites}
-        >
-          Clear
-        </Button>
-      </div>
+      <PokemonSearchForm title={'Discover the Power of Your Favorite Pokémon!'}/>
 
-      <div>
+      <div className='my-4'>
         {
           favorites.length ?
             <ul className='flex flex-wrap justify-center gap-4'>
@@ -51,7 +39,7 @@ export const FavoritesPage = () => {
 
                   <Link to={`/pokemon/${pokemon.name}`}>
                     <div className="p-4 flex flex-col items-center">
-                      <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden">
+                      <div className="w-24 h-24 bg-gray-100 hover:bg-purple-200 transition duration-300 ease-in-out rounded-full flex items-center justify-center overflow-hidden">
                         <img
                           src={pokemon.image ? pokemon.image : PokemonLogo}
                           alt={pokemon.name}
@@ -84,6 +72,8 @@ export const FavoritesPage = () => {
             </div>
         }
       </div>
+
+      <Footer />
     </div>
   )
 }

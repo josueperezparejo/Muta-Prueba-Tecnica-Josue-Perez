@@ -10,7 +10,7 @@ export const getFetchPokemons = (initialUrl) => {
   const [previousPage, setPreviousPage] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
 
-  const { favorites } = usePokemonStore(); 
+  const { favorites } = usePokemonStore();
 
   const fetchData = useCallback(async (url) => {
     setLoading(true);
@@ -30,7 +30,7 @@ export const getFetchPokemons = (initialUrl) => {
         return {
           name: pokemonDetails.name,
           image: pokemonDetails.sprites.front_default,
-          isFavorite: favorites.includes(pokemonDetails.name), 
+          isFavorite: favorites.includes(pokemonDetails.name),
         };
       });
 
@@ -39,27 +39,35 @@ export const getFetchPokemons = (initialUrl) => {
       setData(pokemonDetails);
       setNextPage(result.next);
       setPreviousPage(result.previous);
-      setTotalPages(Math.ceil(result.count / 20)); 
+      setTotalPages(Math.ceil(result.count / 20));
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  }, []); 
+  }, []);
 
   useEffect(() => {
     fetchData(currentUrl);
   }, [currentUrl, fetchData]);
 
-  
   useEffect(() => {
     setData((prevData) =>
       prevData.map((pokemon) => ({
         ...pokemon,
-        isFavorite: favorites.includes(pokemon.name), 
+        isFavorite: favorites.includes(pokemon.name),
       }))
     );
   }, [favorites]);
 
-  return { loading, data, setData, error, nextPage, previousPage, totalPages, setCurrentUrl };
+  return {
+    data,
+    error,
+    loading,
+    nextPage,
+    previousPage,
+    setCurrentUrl,
+    setData,
+    totalPages,
+  };
 };

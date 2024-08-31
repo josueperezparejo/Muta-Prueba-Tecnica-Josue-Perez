@@ -16,7 +16,7 @@ export const ErrorMessage = ({ message }) => {
       <p className="text-lg mb-4 text-gray-700 text-center">{message}</p>
       <button
         className="px-4 py-2 text-white bg-purple-500 rounded hover:bg-purple-700"
-        onClick={() => navigate(-1)}
+        onClick={() => navigate('/')}
       >
         Go Back
       </button>

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { usePokemonStore } from '../store/usePokemonStore';
+import { POKEAPI } from '../config';
 
 export const useFetchPokemons = (initialUrl, initialLimit = sessionStorage.setItem('cantPage', cantPage) || 20) => {
   const [loading, setLoading] = useState(true);
@@ -14,6 +15,7 @@ export const useFetchPokemons = (initialUrl, initialLimit = sessionStorage.setIt
   const { favorites } = usePokemonStore();
 
   const fetchData = useCallback(async (url) => {
+
     setLoading(true);
     setError(null);
 
@@ -31,7 +33,7 @@ export const useFetchPokemons = (initialUrl, initialLimit = sessionStorage.setIt
         return {
           name: pokemonDetails.name,
           image: pokemonDetails.sprites.front_default,
-          isFavorite: favorites.includes(pokemonDetails.name), 
+          isFavorite: favorites.includes(pokemonDetails.name),
         };
       });
 
@@ -48,13 +50,11 @@ export const useFetchPokemons = (initialUrl, initialLimit = sessionStorage.setIt
     }
   }, [favorites, limit]);
 
-
   useEffect(() => {
     if (currentUrl) {
       fetchData(currentUrl);
     }
   }, [currentUrl, fetchData, limit]);
-
 
   useEffect(() => {
     setData((prevData) =>
@@ -65,12 +65,21 @@ export const useFetchPokemons = (initialUrl, initialLimit = sessionStorage.setIt
     );
   }, [favorites]);
 
-
   useEffect(() => {
     const offset = (currentUrl.match(/offset=(\d+)/) || [])[1] || 0;
-    const url = `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`;
+    const url = `${POKEAPI}pokemon?offset=${offset}&limit=${limit}`;
     setCurrentUrl(url);
   }, [limit]);
 
-  return { loading, data, setData, error, nextPage, previousPage, totalPages, setCurrentUrl, setLimit };
+  return {
+    data,
+    error,
+    loading,
+    nextPage,
+    previousPage,
+    setCurrentUrl,
+    setData,
+    setLimit,
+    totalPages,
+  };
 };
