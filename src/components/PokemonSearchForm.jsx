@@ -26,14 +26,10 @@ export const PokemonSearchForm = ({ title }) => {
 
     setShowAlert(false);
     navigate(`/pokemon/${searchTerm}`);
-    console.log('Searching for:', searchTerm);
   };
 
   const handleViewFavorites = () => {
-    // Verifica si estás en una ruta específica
-
     navigate('/pokemons/favorites');
-    console.log('Viewing favorites');
   };
 
   const handleDeleteFavorites = () => {

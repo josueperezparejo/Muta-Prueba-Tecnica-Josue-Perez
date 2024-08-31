@@ -12,7 +12,7 @@ import { POKEAPI } from '../config';
 export const PokemonDetailPage = () => {
 
   const { name } = useParams();
-  const lowerCaseName = name.toLowerCase();
+  const lowerCaseName = name.toLowerCase().trim();
 
   const [pokemon, setPokemon] = useState(null);
   const [loading, setLoading] = useState(true);
